@@ -1,0 +1,42 @@
+# Model 4: Exponential distribution, tau ~ dgamma(1, 0.001)
+
+########## Important parameters ###############
+# source == 1 for MORPHEUS
+# source == 2 for Flatiron
+#
+# therefore:
+#
+# alpha[1] for MORPHEUS
+# alpha[2] for Flatiron
+#
+# arm == 1 for Atezo + Tira
+# arm == 0 for Atezo
+###############################################
+
+# Define model
+model
+{
+    for (i in 1:n)
+    {   
+        is.censored[i]~dinterval(t[i],t.cen[i])
+        t[i]~ dexp(lambda[i])
+        lambda[i]<-exp(alpha[source[i]]+beta*arm[i])
+    }
+    
+    # Set priors
+    beta~dnorm(0.0,0.001)
+    
+    ## Flatiron prior alpha
+    alpha[2] ~ dnorm(0, 0.001)
+    
+    ## MORPHEUS prior alpha
+    alpha[1] ~ dnorm(alpha[2],tau)
+    
+    ## Commensurability parameter
+    tau ~ dgamma(1, 0.001)
+    
+    # Define contrasts of interest
+    HR_atezo_tira_vs_atezo = exp(beta)
+    HR_atezo_flatiron_vs_morpheus = exp(alpha[2] - alpha[1])
+
+}

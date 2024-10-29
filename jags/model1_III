@@ -1,0 +1,49 @@
+# Model 1: Weibull distribution, tau ~ dgamma(0.001, 0.001)
+# Iteration III: Using two alphas and one beta, zeros method
+
+########## Important parameters ###############
+# source == 1 for MORPHEUS
+# source == 2 for Flatiron
+#
+# therefore:
+#
+# alpha[1] for MORPHEUS
+# alpha[2] for Flatiron
+#
+# arm == 1 for Atezo + Tira
+# arm == 0 for Atezo
+###############################################
+
+# Define model
+model
+{
+    for (i in 1:n)
+    {   
+        zeros[i] ~ dpois(zeros.mean[i])
+        zeros.mean[i] <- -l[i] + C
+        l[i] <- log(L[i])
+        S_t[i] <- exp(-lambda[i] * pow(os_months[i], v))
+        h_t[i] <- lambda[i]*v*pow(os_months[i],(v-1))
+        h_t_cens[i] <- pow(h_t[i], os_event[i])
+        L[i] <-  h_t_cens[i] * S_t[i]
+        lambda[i] <- exp(alpha[source[i]]+beta*arm[i])
+    }
+    
+    # Set priors
+    beta ~ dnorm(0.0,0.001)
+    v ~ dexp(1)
+    
+    ## Flatiron prior alpha
+    alpha[2] ~ dnorm(0, 0.001)
+    
+    ## MORPHEUS prior alpha
+    alpha[1] ~ dnorm(alpha[2],tau)
+    
+    ## Commensurability parameter
+    tau ~ dgamma(0.001, 0.001)
+    
+    # Define contrasts of interest
+    HR_atezo_tira_vs_atezo = exp(beta)
+    HR_atezo_flatiron_vs_morpheus = exp(alpha[2] - alpha[1])
+
+}

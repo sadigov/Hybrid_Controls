@@ -1,0 +1,77 @@
+---
+title: "Frequentist results"
+subtitle: "Last updated `r Sys.Date()`"
+author: "Artemis Koukounari, Matt Secrest (alphabetical)"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    keep_md: FALSE
+---
+
+```{r setup,include = FALSE}
+knitr::opts_chunk$set(eval = TRUE,         # Evaluate code
+                      echo = FALSE,         # echo code?
+                      message = FALSE,     # Show messages
+                      warning = FALSE,     # Show warnings
+                      fig.width = 12,       # Default plot width
+                      fig.height = 8,      # .... height
+                      dpi = 300,           # Plot resolution
+                      fig.align = "left")  # Figure alignment 
+```
+
+## 1:1 greedy nearest neighbor matching{.tabset .tabset-pills .tabset-fade}
+
+1:1 propensity score matching using a propensity score model adjusted for:
+
+* sex
+* ecog
+* bmi
+* age
+* tobhx
+* surgery
+* viscfl
+
+### Cox proportional hazards{.tabset .tabset-pills .tabset-fade}
+
+#### Results
+```{r}
+summary(combined_ps_match_cox)
+```
+
+#### KM curves
+```{r}
+combined_ps_match_km[[2]] %>% 
+  gt() %>% 
+  fmt_number(columns = 5:10,decimals = 3)
+
+combined_ps_match_km[[3]]
+```
+
+### Parametric modeling results{.tabset .tabset-pills .tabset-fade}
+
+#### Exponential{.tabset .tabset-pills .tabset-fade}
+
+```{r}
+ps_match_pop_parametric[['Exponential']][[1]]
+ps_match_pop_parametric[['Exponential']][[2]]()
+ps_match_pop_parametric[['Exponential']][[3]]
+```
+
+#### Weibull{.tabset .tabset-pills .tabset-fade}
+
+```{r}
+ps_match_pop_parametric[['Weibull']][[1]]
+ps_match_pop_parametric[['Weibull']][[2]]()
+ps_match_pop_parametric[['Weibull']][[3]]
+```
+
+#### Gompertz{.tabset .tabset-pills .tabset-fade}
+
+```{r}
+ps_match_pop_parametric[['Gompertz']][[1]]
+ps_match_pop_parametric[['Gompertz']][[2]]()
+ps_match_pop_parametric[['Gompertz']][[3]]
+```
+
+

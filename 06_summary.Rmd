@@ -1,0 +1,107 @@
+---
+title: "Summary of analyses"
+subtitle: "Last updated `r Sys.Date()`"
+author: "Artemis Koukounari, Matt Secrest (alphabetical)"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    keep_md: FALSE
+---
+
+```{r setup,include = FALSE}
+knitr::opts_chunk$set(eval = TRUE,         # Evaluate code
+                      echo = FALSE,         # echo code?
+                      message = FALSE,     # Show messages
+                      warning = FALSE,     # Show warnings
+                      fig.width = 5,       # Default plot width
+                      fig.height = 3,      # .... height
+                      dpi = 300,           # Plot resolution
+                      fig.align = "left")  # Figure alignment 
+```
+
+## Full results{.tabset .tabset-pills .tabset-fade}
+### MORPHEUS-only population
+
+#### Table
+
+```{r}
+morpheus_only_results_out[[1]]
+```
+
+#### Plot
+```{r}
+morpheus_only_results_out[[2]]
+
+```
+
+
+### Full population (including all RWD patients meeting inclusion/exclusion criteria)
+
+No random effects modeling for the moment.
+
+#### Table
+
+```{r}
+full_population_results_out[[1]]
+```
+
+#### Plot
+```{r}
+full_population_results_out[[2]]
+```
+
+### 1:1 PS matched population (including all RWD patients meeting inclusion/exclusion criteria)
+
+#### Table
+
+```{r}
+matched_1_1_non_dynamic_results_out[[1]]
+```
+
+#### Plot
+```{r}
+matched_1_1_non_dynamic_results_out[[2]]
+```
+
+### Bayesian dynamic borrowing (1:1 PS matched population)
+
+#### Table
+
+```{r}
+bdb_summary_matched_population_out[[1]]
+```
+
+#### Plot
+```{r}
+bdb_summary_matched_population_out[[2]]
+```
+
+### Bayesian dynamic borrowing (full population)
+
+#### Table
+
+```{r}
+bdb_summary_full_population_out[[1]]
+```
+
+#### Plot
+```{r}
+bdb_summary_full_population_out[[2]]
+```
+
+
+## Select results
+
+### Table
+
+```{r}
+succinct_summary_table
+```
+
+
+### Plot
+
+```{r,fig.dim=c(10,5)}
+succinct_summary_plot
+```

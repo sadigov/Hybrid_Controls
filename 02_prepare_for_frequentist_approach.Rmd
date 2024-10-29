@@ -1,0 +1,184 @@
+---
+title: "Prepare for frequentist approach"
+subtitle: "Last updated `r Sys.Date()`"
+author: "Artemis Koukounari, Matt Secrest (alphabetical)"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    keep_md: FALSE
+---
+
+```{r setup,include = FALSE}
+knitr::opts_chunk$set(eval = TRUE,         # Evaluate code
+                      echo = FALSE,         # echo code?
+                      message = FALSE,     # Show messages
+                      warning = FALSE,     # Show warnings
+                      fig.width = 12,       # Default plot width
+                      fig.height = 8,      # .... height
+                      dpi = 300,           # Plot resolution
+                      fig.align = "left")  # Figure alignment 
+```
+
+
+
+## Cox PH results{.tabset .tabset-pills .tabset-fade}
+
+### MORPHEUS only
+
+```{r}
+summary(morpheus_only_cox)
+
+
+morpheus_only_km[[2]] %>% 
+  gt() %>% 
+  fmt_number(columns = 5:10,decimals = 3)
+
+morpheus_only_km[[3]]
+```
+
+### MORPHEUS + all eligible RWD atezo patients only
+
+```{r}
+summary(combined_full_cox)
+
+combined_full_km[[2]] %>% 
+  gt() %>% 
+  fmt_number(columns = 5:10,decimals = 3)
+
+combined_full_km[[3]]
+```
+
+
+## Matching exploration {.tabset .tabset-pills .tabset-fade}
+
+Based on the results below, it was decided to pursue 1:1 propensity score matching 
+using a propensity score model adjusted for:
+
+* sex
+* ecog
+* bmi
+* age
+* tobhx
+* surgery
+* viscfl
+
+### Full matching{.tabset .tabset-pills .tabset-fade}
+
+```{r, results = 'asis'}
+for(i in 1:NROW(full_matches)){
+  pander::pandoc.header(paste0(full_matches[[i]]$`adjustment vars`,collapse=', '),level=4)
+  pander::pandoc.p(paste0(full_matches[[i]]$`n patients dropped with missing values`, 
+                          ' patients dropped with missing values.'))
+  summary(full_matches[[i]][[4]])$nn %>% 
+    as_tibble(rownames = ' ') %>% 
+    kableExtra::kable() %>% 
+    kableExtra::kable_styling() %>% 
+    print()
+  print(full_matches[[i]]$plot)
+  pander::pandoc.p('')
+  pander::pandoc.p('')
+  
+}
+
+```
+
+### 1:1 greedy nearest-neighbor PS matching {.tabset .tabset-pills .tabset-fade}
+
+```{r, results = 'asis'}
+for(i in 1:NROW(greedy_matches)){
+  pander::pandoc.header(paste0(greedy_matches[[i]]$`adjustment vars`,collapse=', '),level=4)
+  pander::pandoc.p(paste0(greedy_matches[[i]]$`n patients dropped with missing values`, 
+                          ' patients dropped with missing values. ',
+                          NROW(match.data(greedy_matches[[i]]$`matchit object`)),
+                          ' left after matching'))
+  summary(greedy_matches[[i]][[4]])$nn %>% 
+    as_tibble(rownames = ' ') %>% 
+    kableExtra::kable() %>% 
+    kableExtra::kable_styling() %>% 
+    print()
+  print(greedy_matches[[i]]$plot)
+  pander::pandoc.p('')
+  pander::pandoc.p('')
+  
+}
+
+```
+
+
+### Exact matching {.tabset .tabset-pills .tabset-fade}
+
+```{r, results = 'asis'}
+for(i in 1:NROW(exact_matches)){
+  pander::pandoc.header(paste0(exact_matches[[i]]$`adjustment vars`,collapse=', '),level=4)
+  pander::pandoc.p(paste0(exact_matches[[i]]$`n patients dropped with missing values`, 
+                          ' patients dropped with missing values. ',
+                          NROW(match.data(greedy_matches[[i]]$`matchit object`)),
+                          ' left after matching'))
+  summary(exact_matches[[i]][[4]])$nn %>% 
+    as_tibble(rownames = ' ') %>% 
+    kableExtra::kable() %>% 
+    kableExtra::kable_styling() %>% 
+    print()
+  print(exact_matches[[i]]$plot)
+  pander::pandoc.p('')
+  pander::pandoc.p('')
+  
+}
+
+```
+
+
+## Explore parametric modeling - MORPHEUS population only{.tabset .tabset-pills .tabset-fade}
+
+### Exponential
+
+```{r}
+just_trial_parametric[['Exponential']][[1]]
+just_trial_parametric[['Exponential']][[2]]()
+just_trial_parametric[['Exponential']][[3]]
+```
+
+### Weibull
+
+```{r}
+just_trial_parametric[['Weibull']][[1]]
+just_trial_parametric[['Weibull']][[2]]()
+just_trial_parametric[['Weibull']][[3]]
+```
+
+### Gompertz
+
+```{r}
+just_trial_parametric[['Gompertz']][[1]]
+just_trial_parametric[['Gompertz']][[2]]()
+just_trial_parametric[['Gompertz']][[3]]
+```
+
+
+## Explore parametric modeling - MORPHEUS + full Flatiron RWD population{.tabset .tabset-pills .tabset-fade}
+
+### Exponential
+
+```{r}
+full_pop_parametric[['Exponential']][[1]]
+full_pop_parametric[['Exponential']][[2]]()
+full_pop_parametric[['Exponential']][[3]]
+```
+
+### Weibull
+
+```{r}
+full_pop_parametric[['Weibull']][[1]]
+full_pop_parametric[['Weibull']][[2]]()
+full_pop_parametric[['Weibull']][[3]]
+```
+
+### Gompertz
+
+```{r}
+full_pop_parametric[['Gompertz']][[1]]
+full_pop_parametric[['Gompertz']][[2]]()
+full_pop_parametric[['Gompertz']][[3]]
+```
+

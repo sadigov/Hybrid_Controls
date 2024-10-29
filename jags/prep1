@@ -1,0 +1,15 @@
+# Model: Weibull with only trial arm as the term
+model
+{
+    for (i in 1:n)
+    {   
+        is.censored[i]~dinterval(t[i],t.cen[i])
+        t[i]~ dweib(v,lambda[i])
+        lambda[i]<-exp(rate+beta.arm*arm[i])
+    }
+    rate~dnorm(0.0,0.001)
+    beta.arm~dnorm(0.0,0.001)
+    exp_rate <- exp(rate)
+    exp_beta.arm <- exp(beta.arm)
+    v ~ dexp(1)
+}

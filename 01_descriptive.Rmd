@@ -1,0 +1,50 @@
+---
+title: "Descriptive outputs"
+author: "Artemis Koukounari, Matt Secrest (alphabetical)"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    keep_md: FALSE
+---
+
+```{r setup,include = FALSE}
+knitr::opts_chunk$set(eval = TRUE,         # Evaluate code
+                      echo = FALSE,         # echo code?
+                      message = FALSE,     # Show messages
+                      warning = FALSE,     # Show warnings
+                      fig.width = 12,       # Default plot width
+                      fig.height = 8,      # .... height
+                      dpi = 300,           # Plot resolution
+                      fig.align = "left")  # Figure alignment 
+```
+
+## Attrition
+
+```{r}
+fi %>% 
+    fi_plot_attrition
+```
+
+## Table one
+
+```{r}
+tbl1
+```
+
+## KM curves
+Note: restricted mean survival limited to 18 months
+```{r}
+crude_km_by_arm[[2]] %>% 
+    gt() %>% 
+    fmt_number(6:10,decimals = 2)
+
+crude_km_by_arm[[3]]
+```
+
+## Sankeys (RWD only)
+
+```{r}
+fi %>% 
+  fi_plot_sankey(palette = 'Set1')
+```

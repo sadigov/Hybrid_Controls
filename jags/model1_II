@@ -1,0 +1,45 @@
+# Model 1: Weibull distribution, tau ~ dgamma(0.001, 0.001)
+# Iteration II: Using three betas
+
+########## Important parameters ###############
+# group == 1 for Flatiron Atezo
+# group == 2 for MORPHEUS Atezo
+# group == 3 for MORPHEUS Atezo + Tira
+#
+# therefore:
+#
+# beta[1] for Flatiron Atezo
+# beta[2] for MORPHEUS Atezo
+# beta[3] for MORPHEUS Atezo + Tira
+###############################################
+
+# Define model
+model
+{
+    for (i in 1:n)
+    {   
+        is.censored[i]~dinterval(t[i],t.cen[i])
+        t[i]~ dweib(v,lambda[i])
+        lambda[i]<-exp(beta[group[i]])
+    }
+    
+    # Set priors
+    v ~ dexp(1)
+    
+    ## MORPHEUS Atezo + Tira prior
+    beta[3] ~ dnorm(0,0.001)
+    
+    ## Flatiron prior
+    beta[1] ~ dnorm(0, 0.001)
+    
+    ## MORPHEUS Atezo prior
+    beta[2] ~ dnorm(beta[1],tau)
+    
+    ## Commensurability parameter
+    tau ~ dgamma(0.001, 0.001)
+    
+    # Define contrasts of interest
+    HR_atezo_tira_vs_atezo = exp(beta[3] - beta[2])
+    HR_atezo_flatiron_vs_morpheus = exp(beta[2] - beta[1])
+
+}
